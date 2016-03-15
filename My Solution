@@ -1,0 +1,77 @@
+
+import java.util.*;
+import java.text.*;
+
+
+/**
+ * You must implement the getPalindromeDates method so that it returns
+ * all of the dates that are palindromes when in format 'MMddyyyy'.  The 
+ * getPalindromeDates method should have the following guarantees:
+ * 
+ * - Always returns a non-null Set<Date>.
+ * - Dates within the Set will always iterate in chronological order.
+ * - The start and end parameters will always be non-null Dates.
+ * - Start is not guaranteed to be chronologically before end.
+ */
+public class Solution {
+
+
+
+   final static Set<Date> getPalindromeDates(Date start, Date end) throws ParseException{
+        Set<Date> dates = new LinkedHashSet<Date>(); //creates a list to return
+        GregorianCalendar calendar = (GregorianCalendar) GregorianCalendar.getInstance(); //create a calendar object for local date and time
+        calendar.setTime(start); //set the start of the calendar object
+        if(start.after(end)){
+            System.out.println("Sorry, Your End Date was before your Start Date");
+        }
+        else{
+            while(calendar.getTime().before(end)){ //loop through days as they change
+            	Date currentDay = calendar.getTime(); //gets the current specified time and saves it to a variable
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");//correct format to check by
+                String currentDayFormatted = simpleDateFormat.format(currentDay); //gets current date and changes it to a string
+                char[] dateArray = currentDayFormatted.toCharArray(); //change to char array for palindrome test
+                palindromeCheck(dateArray);  
+                if(palindromeCheck(dateArray) == true){
+	                SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+	                String dateArrayToString = new String(dateArray);
+	                Date palindromeDates = formatter.parse(dateArrayToString); //parse palindrome back to date format
+	                dates.add(palindromeDates); //adds date to list if palindrome
+                }
+				calendar.add(Calendar.DATE,1); //go to next day
+            }
+           
+        }
+    return dates;
+    }
+
+   public static boolean palindromeCheck(char[] word) {
+
+	   	String wordString = new String(word); //change the char array to string for regex parsing
+	   	String wordFixed = wordString.replaceAll("\\D+", ""); //get rid of '/'
+	   	char [] wordChar = wordFixed.toCharArray(); //change back to char array for method
+		int start = 0; // beginning
+		int end = wordChar.length - 1; // ending
+		while (end > start) {
+			if (wordChar[start] != wordChar[end]) {
+				return false; //returns false if not palindrome
+			}
+			++start;
+			--end;
+		}
+		return true; //returns true if palindrome
+	}
+
+	public static void main(String[] args) throws ParseException {
+	
+		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+		String str_date ="01/01/2001";
+		String end_date ="12/31/2001";
+		Date  start = formatter.parse(str_date); 
+		Date  end = formatter.parse(end_date);
+		getPalindromeDates(start, end);
+		Set<Date> dates = getPalindromeDates(start, end);
+		System.out.println(dates);
+		
+	}
+}
+
